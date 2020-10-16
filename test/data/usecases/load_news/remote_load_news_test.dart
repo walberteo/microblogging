@@ -1,4 +1,5 @@
 import 'package:meta/meta.dart';
+import 'package:microblogging/domain/helpers/helpers.dart';
 
 import 'package:test/test.dart';
 import 'package:faker/faker.dart';
@@ -15,10 +16,14 @@ class RemoteLoadNews {
   RemoteLoadNews({@required this.httpClient, @required this.url});
 
   Future<List<NewsEntity>> load() async {
-    final httpResponse = await httpClient.request(url: url, method: 'get');
-    return httpResponse
-        .map((json) => RemoteNewsModel.fromJson(json).toEntity())
-        .toList();
+    try {
+      final httpResponse = await httpClient.request(url: url, method: 'get');
+      return httpResponse
+          .map((json) => RemoteNewsModel.fromJson(json).toEntity())
+          .toList();
+    } on HttpError {
+      throw DomainError.unexpected;
+    }
   }
 }
 
@@ -90,5 +95,17 @@ void main() {
                   createAt: DateTime.parse(n['message']['created_at']),
                 )))
             .toList());
+  });
+
+  test(
+      'Deve lançar um UnexpectedError se HttpClient retornar 200 com dados invalidos',
+      () async {
+    mockHttpData([
+      {'invalid_key': 'invalid_value'}
+    ]);
+
+    final future = sut.load();
+
+    expect(future, throwsA(DomainError.unexpected));
   });
 }

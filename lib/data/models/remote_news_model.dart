@@ -1,6 +1,7 @@
-import 'package:microblogging/data/models/models.dart';
-
 import 'package:meta/meta.dart';
+
+import 'package:microblogging/data/http/http.dart';
+import 'package:microblogging/data/models/models.dart';
 import 'package:microblogging/domain/entities/entities.dart';
 
 class RemoteNewsModel {
@@ -9,9 +10,14 @@ class RemoteNewsModel {
 
   RemoteNewsModel({@required this.user, @required this.message});
 
-  factory RemoteNewsModel.fromJson(Map json) => RemoteNewsModel(
-      user: RemoteUserModel.fromJson(json['user']),
-      message: RemoteMessage.fromJson(json['message']));
+  factory RemoteNewsModel.fromJson(Map json) {
+    if (!json.keys.toSet().containsAll({'user', 'message'})) {
+      throw HttpError.invalidData;
+    }
+    return RemoteNewsModel(
+        user: RemoteUserModel.fromJson(json['user']),
+        message: RemoteMessage.fromJson(json['message']));
+  }
 
   NewsEntity toEntity() => NewsEntity(
       user: UserEntity(
