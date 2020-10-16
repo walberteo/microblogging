@@ -11,5 +11,5 @@ class NewsEntity extends Equatable {
 
   NewsEntity({@required this.user, @required this.message});
 
-  List<Object> get props => [];
+  List<Object> get props => [user.props, message.props];
 }

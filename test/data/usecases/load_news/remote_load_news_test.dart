@@ -4,37 +4,59 @@ import 'package:test/test.dart';
 import 'package:faker/faker.dart';
 import 'package:mockito/mockito.dart';
 
+import 'package:microblogging/data/models/models.dart';
 import 'package:microblogging/data/http/http.dart';
+import 'package:microblogging/domain/entities/entities.dart';
 
 class RemoteLoadNews {
-  final HttpClient httpClient;
+  final HttpClient<List<Map>> httpClient;
   final String url;
 
   RemoteLoadNews({@required this.httpClient, @required this.url});
 
-  Future<void> load() async {
-    await httpClient.request(url: url, method: 'get');
+  Future<List<NewsEntity>> load() async {
+    final httpResponse = await httpClient.request(url: url, method: 'get');
+    return httpResponse
+        .map((json) => RemoteNewsModel.fromJson(json).toEntity())
+        .toList();
   }
 }
 
-class HttpClientSpy extends Mock implements HttpClient {}
+class HttpClientSpy extends Mock implements HttpClient<List<Map>> {}
 
 void main() {
   RemoteLoadNews sut;
   HttpClientSpy httpClient;
   String url;
+  List<Map> list;
+
+  PostExpectation mockResquest() => when(
+      httpClient.request(url: anyNamed('url'), method: anyNamed('method')));
+
+  void mockHttpData(List<Map> data) {
+    list = data;
+    mockResquest().thenAnswer((_) async => data);
+  }
 
   List<Map> mockValidData() => [
         {
           "user": {
-            "name": "O Boticário",
-            "profile_picture":
-                "https://pbs.twimg.com/profile_images/1240676323913347074/Gg09hEPx_400x400.jpg"
+            "name": faker.person.name(),
+            "profile_picture": faker.internet.httpUrl()
           },
           "message": {
-            "content":
-                "Além disso, nossos funcionários e familiares receberão kits de proteção. Afinal, o cuidado começa aqui dentro, né?",
-            "created_at": "2020-02-02T16:10:33Z"
+            "content": faker.lorem.word(),
+            "created_at": faker.date.dateTime().toIso8601String()
+          }
+        },
+        {
+          "user": {
+            "name": faker.person.name(),
+            "profile_picture": faker.internet.httpUrl()
+          },
+          "message": {
+            "content": faker.lorem.word(),
+            "created_at": faker.date.dateTime().toIso8601String()
           }
         },
       ];
@@ -43,20 +65,30 @@ void main() {
     httpClient = HttpClientSpy();
     url = faker.internet.httpUrl();
     sut = RemoteLoadNews(httpClient: httpClient, url: url);
+    mockHttpData(mockValidData());
   });
 
-  test('Deve chamar HttpCliente com a url e método correta', () async {
+  test('Deve chamar HttpCliente com a url e o método correto', () async {
     await sut.load();
 
     verify(httpClient.request(url: url, method: 'get'));
   });
 
   test('Deve retornar as news em 200', () async {
-    when(httpClient.request(url: anyNamed('url'), method: anyNamed('method')))
-        .thenAnswer((_) async => mockValidData());
+    final news = await sut.load();
 
-    await sut.load();
-
-    verify(httpClient.request(url: url, method: 'get'));
+    expect(
+        news,
+        list
+            .map((n) => NewsEntity(
+                user: UserEntity(
+                  name: n['user']['name'],
+                  profilePicture: n['user']['profile_picture'],
+                ),
+                message: MessageEntity(
+                  content: n['message']['content'],
+                  createAt: DateTime.parse(n['message']['created_at']),
+                )))
+            .toList());
   });
 }
