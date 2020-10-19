@@ -43,6 +43,10 @@ void main() {
     mockResquest().thenAnswer((_) async => data);
   }
 
+  void mockHttpError(HttpError error) {
+    mockResquest().thenThrow(error);
+  }
+
   List<Map> mockValidData() => [
         {
           "user": {
@@ -98,11 +102,19 @@ void main() {
   });
 
   test(
-      'Deve lançar um UnexpectedError se HttpClient retornar 200 com dados invalidos',
+      'Deve lançar um UnexpectedError se HttpClient retornar 200 com dados inválidos',
       () async {
     mockHttpData([
       {'invalid_key': 'invalid_value'}
     ]);
+
+    final future = sut.load();
+
+    expect(future, throwsA(DomainError.unexpected));
+  });
+
+  test('Deve lançar um UnexpectedError se HttpCliente retornar 404', () async {
+    mockHttpError(HttpError.notFound);
 
     final future = sut.load();
 
