@@ -3,7 +3,7 @@ import 'package:http/http.dart';
 import 'package:mockito/mockito.dart';
 import 'package:test/test.dart';
 
-import 'package:microblogging/infra/infra.dart';
+import 'package:microblogging/infra/http/http.dart';
 import 'package:microblogging/data/http/http.dart';
 
 class ClientSpy extends Mock implements Client {}
