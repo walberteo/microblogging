@@ -34,6 +34,8 @@ class HttpAdapter implements HttpClient {
       return response.body.isEmpty ? null : jsonDecode(response.body);
     } else if (response.statusCode == 204) {
       return null;
+    } else if (response.statusCode == 400) {
+      throw HttpError.badRequest;
     } else {
       throw HttpError.serverError;
     }
@@ -111,6 +113,22 @@ void main() {
       final response = await sut.request(url: url, method: 'get');
 
       expect(response, null);
+    });
+
+    test('deve devovler BadResquesError se o get retornar 400', () async {
+      mockResponse(400, body: '');
+
+      final future = sut.request(url: url, method: 'get');
+
+      expect(future, throwsA(HttpError.badRequest));
+    });
+
+    test('deve devolver BadResquesError se o get retornar 400', () async {
+      mockResponse(400);
+
+      final future = sut.request(url: url, method: 'get');
+
+      expect(future, throwsA(HttpError.badRequest));
     });
   });
 }
