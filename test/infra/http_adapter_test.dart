@@ -125,7 +125,7 @@ void main() {
       expect(response, null);
     });
 
-    test('deve devovler BadResquesError se o get retornar 400', () async {
+    test('deve lançar BadResquesError se o get retornar 400', () async {
       mockResponse(400, body: '');
 
       final future = sut.request(url: url, method: 'get');
@@ -133,7 +133,7 @@ void main() {
       expect(future, throwsA(HttpError.badRequest));
     });
 
-    test('deve devolver BadResquesError se o get retornar 400', () async {
+    test('deve lançar BadResquesError se o get retornar 400', () async {
       mockResponse(400);
 
       final future = sut.request(url: url, method: 'get');
@@ -141,7 +141,7 @@ void main() {
       expect(future, throwsA(HttpError.badRequest));
     });
 
-    test('deve devolver UnauthorizedError se o get retornar 401', () async {
+    test('deve lançar UnauthorizedError se o get retornar 401', () async {
       mockResponse(401);
 
       final future = sut.request(url: url, method: 'get');
@@ -149,7 +149,7 @@ void main() {
       expect(future, throwsA(HttpError.unauthorized));
     });
 
-    test('deve devolver ForbiddenError se get retornar 403', () async {
+    test('deve lançar ForbiddenError se get retornar 403', () async {
       mockResponse(403);
 
       final future = sut.request(url: url, method: 'get');
@@ -157,12 +157,20 @@ void main() {
       expect(future, throwsA(HttpError.forbidden));
     });
 
-    test('deve retornar NotFoundError se get retornar 404', () async {
+    test('deve lançar NotFoundError se get retornar 404', () async {
       mockResponse(404);
 
       final future = sut.request(url: url, method: 'get');
 
       expect(future, throwsA(HttpError.notFound));
+    });
+
+    test('deve lançar ServerError se o get retornar 500', () async {
+      mockResponse(500);
+
+      final future = sut.request(url: url, method: 'get');
+
+      expect(future, throwsA(HttpError.serverError));
     });
   });
 }
