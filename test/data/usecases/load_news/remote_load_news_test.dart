@@ -21,8 +21,10 @@ class RemoteLoadNews {
       return httpResponse
           .map((json) => RemoteNewsModel.fromJson(json).toEntity())
           .toList();
-    } on HttpError {
-      throw DomainError.unexpected;
+    } on HttpError catch (error) {
+      throw error == HttpError.forbidden
+          ? DomainError.accessDenied
+          : DomainError.unexpected;
     }
   }
 }
@@ -127,5 +129,14 @@ void main() {
     final future = sut.load();
 
     expect(future, throwsA(DomainError.unexpected));
+  });
+
+  test('Deve lançar um AccessDeniedError se HttpCliente retornar 403',
+      () async {
+    mockHttpError(HttpError.forbidden);
+
+    final future = sut.load();
+
+    expect(future, throwsA(DomainError.accessDenied));
   });
 }
