@@ -1,33 +1,11 @@
-import 'package:meta/meta.dart';
-import 'package:microblogging/domain/helpers/helpers.dart';
-
 import 'package:test/test.dart';
 import 'package:faker/faker.dart';
 import 'package:mockito/mockito.dart';
 
-import 'package:microblogging/data/models/models.dart';
 import 'package:microblogging/data/http/http.dart';
+import 'package:microblogging/data/usecases/remote_load_news.dart';
 import 'package:microblogging/domain/entities/entities.dart';
-
-class RemoteLoadNews {
-  final HttpClient<List<Map>> httpClient;
-  final String url;
-
-  RemoteLoadNews({@required this.httpClient, @required this.url});
-
-  Future<List<NewsEntity>> load() async {
-    try {
-      final httpResponse = await httpClient.request(url: url, method: 'get');
-      return httpResponse
-          .map((json) => RemoteNewsModel.fromJson(json).toEntity())
-          .toList();
-    } on HttpError catch (error) {
-      throw error == HttpError.forbidden
-          ? DomainError.accessDenied
-          : DomainError.unexpected;
-    }
-  }
-}
+import 'package:microblogging/domain/helpers/helpers.dart';
 
 class HttpClientSpy extends Mock implements HttpClient<List<Map>> {}
 

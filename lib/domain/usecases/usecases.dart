@@ -1,1 +1,1 @@
-export './news.dart';
+export './load_news.dart';
