@@ -80,5 +80,19 @@ void main() {
         'accept': 'application/json'
       }));
     });
+
+    test('deve devolver os dados se o get retornar 200', () async {
+      final response = await sut.request(url: url, method: 'get');
+
+      expect(response, {'any_key': 'any_value'});
+    });
+
+    test('deve devolver null se o get retonar 200 mas sem dados', () async {
+      mockResponse(200, body: '');
+
+      final response = await sut.request(url: url, method: 'get');
+
+      expect(response, null);
+    });
   });
 }
