@@ -3,7 +3,7 @@ import 'package:faker/faker.dart';
 import 'package:mockito/mockito.dart';
 
 import 'package:microblogging/data/http/http.dart';
-import 'package:microblogging/data/usecases/remote_load_news.dart';
+import 'package:microblogging/data/usecases/usecases.dart';
 import 'package:microblogging/domain/entities/entities.dart';
 import 'package:microblogging/domain/helpers/helpers.dart';
 
