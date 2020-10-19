@@ -172,5 +172,13 @@ void main() {
 
       expect(future, throwsA(HttpError.serverError));
     });
+
+    test('deve lançar ServerError se o get falhar', () async {
+      mockError();
+
+      final future = sut.request(url: url, method: 'get');
+
+      expect(future, throwsA(HttpError.serverError));
+    });
   });
 }
