@@ -32,6 +32,8 @@ class HttpAdapter implements HttpClient {
   Map _handleResponse(Response response) {
     if (response.statusCode == 200) {
       return response.body.isEmpty ? null : jsonDecode(response.body);
+    } else if (response.statusCode == 204) {
+      return null;
     } else {
       throw HttpError.serverError;
     }
@@ -89,6 +91,22 @@ void main() {
 
     test('deve devolver null se o get retonar 200 mas sem dados', () async {
       mockResponse(200, body: '');
+
+      final response = await sut.request(url: url, method: 'get');
+
+      expect(response, null);
+    });
+
+    test('deve devolver null se get retornar 204', () async {
+      mockResponse(204, body: '');
+
+      final response = await sut.request(url: url, method: 'get');
+
+      expect(response, null);
+    });
+
+    test('deve devolver null se get retornar 204 ', () async {
+      mockResponse(204);
 
       final response = await sut.request(url: url, method: 'get');
 
