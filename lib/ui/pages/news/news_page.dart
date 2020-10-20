@@ -31,7 +31,7 @@ class NewsPage extends StatelessWidget {
 
           return SafeArea(
             child: StreamBuilder<List<NewsViewModel>>(
-                stream: presenter.loadNewsStream,
+                stream: presenter.newsStream,
                 builder: (context, snapshot) {
                   if (snapshot.hasError) {
                     return Column(

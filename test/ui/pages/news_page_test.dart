@@ -13,22 +13,22 @@ class NewsPresenterSpy extends Mock implements NewsPresenter {}
 void main() {
   NewsPresenterSpy presenter;
   StreamController<bool> isLoadingController;
-  StreamController<List<NewsViewModel>> loadNewsController;
+  StreamController<List<NewsViewModel>> newsController;
 
   void initStreams() {
     isLoadingController = StreamController<bool>();
-    loadNewsController = StreamController<List<NewsViewModel>>();
+    newsController = StreamController<List<NewsViewModel>>();
   }
 
   void closeStreams() {
     isLoadingController.close();
-    loadNewsController.close();
+    newsController.close();
   }
 
   void mockStreams() {
     when(presenter.isLoadingStream)
         .thenAnswer((_) => isLoadingController.stream);
-    when(presenter.loadNewsStream).thenAnswer((_) => loadNewsController.stream);
+    when(presenter.newsStream).thenAnswer((_) => newsController.stream);
   }
 
   Future<void> loadPage(WidgetTester tester) async {
@@ -78,11 +78,11 @@ void main() {
     expect(find.byType(CircularProgressIndicator), findsNothing);
   });
 
-  testWidgets('deve mostrar o erro se loadNewsStream falhar',
+  testWidgets('deve mostrar o erro se NewsStream falhar',
       (WidgetTester tester) async {
     await loadPage(tester);
 
-    loadNewsController.addError(UIError.unexpected.description);
+    newsController.addError(UIError.unexpected.description);
     await tester.pump();
 
     expect(find.text('Algo de errado aconteceu. Tente novamente em breve.'),
@@ -91,11 +91,11 @@ void main() {
     expect(find.text('O Boticário'), findsNothing);
   });
 
-  testWidgets('deve mostrar a lista se loadNewsStream tiver sucesso',
+  testWidgets('deve mostrar a lista se NewsStream tiver sucesso',
       (WidgetTester tester) async {
     await loadPage(tester);
 
-    loadNewsController.add(makeNews());
+    newsController.add(makeNews());
     await tester.pump();
 
     expect(find.text('Algo de errado aconteceu. Tente novamente em breve.'),
@@ -110,7 +110,7 @@ void main() {
       (WidgetTester tester) async {
     await loadPage(tester);
 
-    loadNewsController.addError(UIError.unexpected.description);
+    newsController.addError(UIError.unexpected.description);
     await tester.pump();
     await tester.tap(find.text('Recarregar'));
 

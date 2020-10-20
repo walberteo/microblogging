@@ -1,6 +1,7 @@
+import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
 
-class NewsViewModel {
+class NewsViewModel extends Equatable {
   final String name;
   final String content;
   final String createAt;
@@ -10,4 +11,6 @@ class NewsViewModel {
     @required this.content,
     @required this.createAt,
   });
+
+  List<Object> get props => [name, content, createAt];
 }
