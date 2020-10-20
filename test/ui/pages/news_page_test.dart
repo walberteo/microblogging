@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:get/route_manager.dart';
+import 'package:microblogging/ui/helpers/helpers.dart';
 
 import 'package:microblogging/ui/pages/pages.dart';
 import 'package:mockito/mockito.dart';
@@ -12,18 +13,22 @@ class NewsPresenterSpy extends Mock implements NewsPresenter {}
 void main() {
   NewsPresenterSpy presenter;
   StreamController<bool> isLoadingController;
+  StreamController<List<NewsViewModel>> loadNewsController;
 
   void initStreams() {
     isLoadingController = StreamController<bool>();
+    loadNewsController = StreamController<List<NewsViewModel>>();
   }
 
   void closeStreams() {
     isLoadingController.close();
+    loadNewsController.close();
   }
 
   void mockStreams() {
     when(presenter.isLoadingStream)
         .thenAnswer((_) => isLoadingController.stream);
+    when(presenter.loadNewsStream).thenAnswer((_) => loadNewsController.stream);
   }
 
   Future<void> loadPage(WidgetTester tester) async {
@@ -49,7 +54,7 @@ void main() {
     verify(presenter.loadData()).called(1);
   });
 
-  testWidgets('Deve mostrar loading corretamente', (WidgetTester tester) async {
+  testWidgets('deve mostrar loading corretamente', (WidgetTester tester) async {
     await loadPage(tester);
 
     isLoadingController.add(true);
@@ -67,5 +72,18 @@ void main() {
     isLoadingController.add(null);
     await tester.pump();
     expect(find.byType(CircularProgressIndicator), findsNothing);
+  });
+
+  testWidgets('deve mostrar o erro se loadNewsStream falhar',
+      (WidgetTester tester) async {
+    await loadPage(tester);
+
+    loadNewsController.addError(UIError.unexpected.description);
+    await tester.pump();
+
+    expect(find.text('Algo de errado aconteceu. Tente novamente em breve.'),
+        findsOneWidget);
+    expect(find.text('Recarregar'), findsOneWidget);
+    expect(find.text('O Boticário'), findsNothing);
   });
 }

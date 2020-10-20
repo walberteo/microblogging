@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:microblogging/ui/helpers/i18n/i18n.dart';
+
+import '../helpers/helpers.dart';
 
 void showLoading(BuildContext context) {
   showDialog(
