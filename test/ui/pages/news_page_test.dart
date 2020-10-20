@@ -44,6 +44,11 @@ void main() {
     await tester.pumpWidget(serverysPage);
   }
 
+  List<NewsViewModel> makeNews() => [
+        NewsViewModel(
+            name: 'O Boticário', content: 'any_content', createAt: 'any_date')
+      ];
+
   tearDown(() {
     closeStreams();
   });
@@ -85,5 +90,18 @@ void main() {
         findsOneWidget);
     expect(find.text('Recarregar'), findsOneWidget);
     expect(find.text('O Boticário'), findsNothing);
+  });
+
+  testWidgets('deve mostrar a lista se loadNewsStream tiver sucesso',
+      (WidgetTester tester) async {
+    await loadPage(tester);
+
+    loadNewsController.add(makeNews());
+    await tester.pump();
+
+    expect(find.text('Algo de errado aconteceu. Tente novamente em breve.'),
+        findsNothing);
+    expect(find.text('Recarregar'), findsNothing);
+    expect(find.text('O Boticário'), findsOneWidget);
   });
 }

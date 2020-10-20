@@ -1,6 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:meta/meta.dart';
+
+import '../news.dart';
 
 class NewsItem extends StatelessWidget {
+  final NewsViewModel viewModel;
+
+  const NewsItem({Key key, @required this.viewModel}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -11,15 +18,14 @@ class NewsItem extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              "O Boticário",
+              viewModel.name,
               style: TextStyle(fontSize: 16),
             ),
-            Text(
-                "Com a união das demais marcas do grupo, doamos 216 toneladas de produtos de higiene para comunidades em vulnerabilidade social de diversas partes do país."),
+            Text(viewModel.content),
             Align(
               alignment: Alignment.centerRight,
               child: Text(
-                "19 out 2020",
+                viewModel.createAt,
                 style: TextStyle(
                   fontSize: 12,
                   color: Colors.black54,

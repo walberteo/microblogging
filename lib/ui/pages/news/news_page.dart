@@ -44,9 +44,16 @@ class NewsPage extends StatelessWidget {
                       ],
                     );
                   }
-                  return ListView(
-                    padding: const EdgeInsets.all(8.0),
-                    children: [NewsItem(), NewsItem(), NewsItem()],
+                  if (snapshot.hasData) {
+                    return ListView(
+                      padding: const EdgeInsets.all(8.0),
+                      children: snapshot.data
+                          .map((viewModel) => NewsItem(viewModel: viewModel))
+                          .toList(),
+                    );
+                  }
+                  return SizedBox(
+                    height: 0,
                   );
                 }),
           );
