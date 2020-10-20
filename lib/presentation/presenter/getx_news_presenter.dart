@@ -1,11 +1,11 @@
-import 'package:meta/meta.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:microblogging/domain/helpers/helpers.dart';
+import 'package:meta/meta.dart';
 
-import 'package:microblogging/domain/usecases/usecases.dart';
-import 'package:microblogging/ui/helpers/helpers.dart';
-import 'package:microblogging/ui/pages/pages.dart';
+import '../../domain/helpers/helpers.dart';
+import '../../domain/usecases/usecases.dart';
+import '../../ui/helpers/helpers.dart';
+import '../../ui/pages/pages.dart';
 
 class GetxNewsPresenter implements NewsPresenter {
   final LoadNews loadNews;

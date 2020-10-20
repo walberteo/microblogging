@@ -7,7 +7,7 @@ import 'package:microblogging/data/usecases/usecases.dart';
 import 'package:microblogging/domain/entities/entities.dart';
 import 'package:microblogging/domain/helpers/helpers.dart';
 
-class HttpClientSpy extends Mock implements HttpClient<List<Map>> {}
+class HttpClientSpy extends Mock implements HttpClient {}
 
 void main() {
   RemoteLoadNews sut;

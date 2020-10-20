@@ -7,7 +7,7 @@ import '../http/http.dart';
 import '../models/models.dart';
 
 class RemoteLoadNews implements LoadNews {
-  final HttpClient<List<Map>> httpClient;
+  final HttpClient httpClient;
   final String url;
 
   RemoteLoadNews({@required this.httpClient, @required this.url});
@@ -16,7 +16,7 @@ class RemoteLoadNews implements LoadNews {
     try {
       final httpResponse = await httpClient.request(url: url, method: 'get');
       return httpResponse
-          .map((json) => RemoteNewsModel.fromJson(json).toEntity())
+          .map<NewsEntity>((json) => RemoteNewsModel.fromJson(json).toEntity())
           .toList();
     } on HttpError catch (error) {
       throw error == HttpError.forbidden
