@@ -28,7 +28,9 @@ class HttpAdapter implements HttpClient {
 
   Map _handleResponse(Response response) {
     if (response.statusCode == 200) {
-      return response.body.isEmpty ? null : jsonDecode(response.body);
+      return response.body.isEmpty
+          ? null
+          : jsonDecode(utf8.decode(response.bodyBytes));
     } else if (response.statusCode == 204) {
       return null;
     } else if (response.statusCode == 400) {

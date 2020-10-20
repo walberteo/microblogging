@@ -35,8 +35,14 @@ class NewsPage extends StatelessWidget {
                 builder: (context, snapshot) {
                   if (snapshot.hasError) {
                     return Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text(snapshot.error),
+                        Text(
+                          snapshot.error,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(fontSize: 16),
+                        ),
+                        SizedBox(height: 15),
                         RaisedButton(
                           child: Text(R.translations.reloading),
                           onPressed: presenter.loadData,

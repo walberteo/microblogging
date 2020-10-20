@@ -15,7 +15,7 @@ class RemoteLoadNews implements LoadNews {
   Future<List<NewsEntity>> load() async {
     try {
       final httpResponse = await httpClient.request(url: url, method: 'get');
-      return httpResponse
+      return httpResponse['news']
           .map<NewsEntity>((json) => RemoteNewsModel.fromJson(json).toEntity())
           .toList();
     } on HttpError catch (error) {
