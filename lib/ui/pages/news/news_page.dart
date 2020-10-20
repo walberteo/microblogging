@@ -39,7 +39,7 @@ class NewsPage extends StatelessWidget {
                         Text(snapshot.error),
                         RaisedButton(
                           child: Text(R.translations.reloading),
-                          onPressed: () {},
+                          onPressed: presenter.loadData,
                         ),
                       ],
                     );

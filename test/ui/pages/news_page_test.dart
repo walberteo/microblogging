@@ -105,4 +105,15 @@ void main() {
     expect(find.text('content 1'), findsOneWidget);
     expect(find.text('date 1'), findsOneWidget);
   });
+
+  testWidgets('deve chamar LoadData no botão de recarregar quando pressionado',
+      (WidgetTester tester) async {
+    await loadPage(tester);
+
+    loadNewsController.addError(UIError.unexpected.description);
+    await tester.pump();
+    await tester.tap(find.text('Recarregar'));
+
+    verify(presenter.loadData()).called(2);
+  });
 }
