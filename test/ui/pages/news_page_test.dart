@@ -45,8 +45,7 @@ void main() {
   }
 
   List<NewsViewModel> makeNews() => [
-        NewsViewModel(
-            name: 'O Boticário', content: 'any_content', createAt: 'any_date')
+        NewsViewModel(name: 'name 1', content: 'content 1', createAt: 'date 1'),
       ];
 
   tearDown(() {
@@ -102,6 +101,8 @@ void main() {
     expect(find.text('Algo de errado aconteceu. Tente novamente em breve.'),
         findsNothing);
     expect(find.text('Recarregar'), findsNothing);
-    expect(find.text('O Boticário'), findsOneWidget);
+    expect(find.text('name 1'), findsOneWidget);
+    expect(find.text('content 1'), findsOneWidget);
+    expect(find.text('date 1'), findsOneWidget);
   });
 }
